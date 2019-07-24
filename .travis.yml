@@ -1,0 +1,7 @@
+language: ruby
+rvm:
+  - 2.5.2
+gemfile:
+  - Gemfile
+script:
+ - bundle exec rake test

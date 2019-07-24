@@ -48,7 +48,7 @@ module ActionDraft
         end
 
         after_save do
-          names.each do |name|
+          __action_draft_names.each do |name|
             public_send("draft_#{name}").save if public_send("draft_#{name}").changed?
           end
         end
