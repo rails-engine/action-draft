@@ -2,6 +2,8 @@
 
 Action Draft brings your ActiveRecord model to storage multiple draft attributes without add any columns to table.
 
+[![Gem Version](https://badge.fury.io/rb/action-draft.svg)](https://rubygems.org/gems/action-draft) [![Build Status](https://travis-ci.org/rails-engine/action-draft.svg?branch=master)](https://travis-ci.org/rails-engine/action-draft)
+
 ## Installation
 
 ```ruby
