@@ -5,7 +5,19 @@ module ActionDraft
     extend ActiveSupport::Concern
 
     included do
-      class_attribute :__action_draft_names
+      mattr_accessor :action_draft_attributes
+    end
+
+    def publish
+      self.action_draft_attributes ||= []
+      self.action_draft_attributes.each do |_name|
+        self.send("#{_name}=", self.send("draft_#{_name}").to_s)
+      end
+      self.save
+    end
+
+    def publish!
+      publish ? true : raise_validation_error
     end
 
     class_methods do
@@ -24,14 +36,14 @@ module ActionDraft
       #
       #   Message.all.with_draft_title # Avoids N+1 queries when you just want the draft fields.
       def has_draft(*names)
-        __action_draft_names ||= []
+        self.action_draft_attributes ||= []
         names = Array(names)
         names.each do |name|
-          __action_draft_names << name
+          self.action_draft_attributes << name.to_sym
 
           class_eval <<-CODE, __FILE__, __LINE__ + 1
             def draft_#{name}
-              self.draft_#{name}_content ||= ActionDraft::Content.new(name: "#{name}", record: self)
+              self.draft_#{name}_content ||= ActionDraft::Content.new(name: "#{name}", record: self, content: self.send("#{name}"))
             end
 
             def draft_#{name}=(content)
@@ -43,12 +55,12 @@ module ActionDraft
         end
 
         scope :with_drafts, -> do
-          names = __action_draft_names.map { |name| "draft_#{name}_content" }
+          names = self.action_draft_attributes.map { |name| "draft_#{name}_content" }
           includes(*names)
         end
 
         after_save do
-          __action_draft_names.each do |name|
+          self.action_draft_attributes.each do |name|
             public_send("draft_#{name}").save if public_send("draft_#{name}").changed?
           end
         end

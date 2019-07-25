@@ -3,6 +3,11 @@
 require "test_helper"
 
 class ActionDraft::ModelTest < ActiveSupport::TestCase
+  test "action_draft_attributes" do
+    assert_equal [:title, :content], Message.new.action_draft_attributes
+    assert_equal [:title, :content], Message.action_draft_attributes
+  end
+
   test "saving attributes" do
     message = Message.create(
       title: "Hello world",
@@ -23,15 +28,46 @@ class ActionDraft::ModelTest < ActiveSupport::TestCase
     assert_equal message.draft_content, ActionDraft::Content.where(record: message, name: "content").take
   end
 
+  test "publish to save" do
+    message = Message.new(draft_title: "Hello draft title", draft_content: "This is draft message content.")
+    assert_equal true, message.publish
+    assert_equal false, message.new_record?
+
+    assert_equal "Hello draft title", message.draft_title.to_s
+    assert_equal "This is draft message content.", message.draft_content.to_s
+    assert_equal message.draft_title.to_s, message.title
+    assert_equal message.draft_content.to_s, message.content
+  end
+
+  test "publish!" do
+    message = Message.new
+    assert_equal false, message.valid?
+    assert_equal ["Title can't be blank"], message.errors.full_messages_for(:title)
+
+    message = Message.new
+    assert_raise(ActiveRecord::RecordInvalid) { message.publish! }
+  end
+
+  test "fallback actual attribute value" do
+    message = Message.create(title: "Hello world", content: "This is message content.")
+    assert_equal "Hello world", message.title
+    assert_equal message.title, message.draft_title.to_s
+    assert_equal "This is message content.", message.content
+    assert_equal message.content, message.draft_content.to_s
+  end
+
   test "without draft" do
-    message = Message.create!(title: "Greetings")
+    message = Message.new
+    message.save(validate: false)
+    assert_equal false, message.new_record?
+
     assert message.draft_title.nil?
     assert message.draft_title.blank?
     assert_not message.draft_title.present?
   end
 
   test "with blank content" do
-    message = Message.create!(draft_content: "")
+    message = Message.create!(title: "Hello world", draft_content: "")
     assert_not message.draft_content.nil?
     assert message.draft_content.blank?
     assert_not message.draft_content.present?

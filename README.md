@@ -7,11 +7,8 @@ Action Draft brings your ActiveRecord model to storage multiple draft attributes
 ## Features
 
 - Save drafts without add columns to the business table.
-- Work any ActiveRecord model, just add `has_draft :field_name`;
-
-## TODO
-
-- Add `publish` method for assignment the draft values to actual attributes.
+- Work any ActiveRecord model, just add `has_draft :field_name`.
+- A `publish` method for assignment the draft values to actual attributes.
 - Fallback to actual attribute value when draft is nil.
 
 ## Installation
@@ -75,6 +72,21 @@ irb> message.draft_title.to_s
 "Draft title"
 irb> message.draft_content.to_s
 "Draft message content"
+```
+
+Publish draft content:
+
+```rb
+irb> message = Message.new
+irb> message.draft_title = "Message title"
+irb> message.publish
+
+irb> message.new_record?
+false
+irb> message.title
+"Message title"
+irb> message.draft_title
+"Message title"
 ```
 
 ## License
