@@ -3,5 +3,7 @@ rvm:
   - 2.5
 services:
   - postgresql
+before_script:
+  - bundle exec rails db:create db:migrate
 script:
- - bundle exec rake test
+  - bundle exec rails test
