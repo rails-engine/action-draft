@@ -1,8 +1,18 @@
 # Action Draft
 
-Action Draft brings your ActiveRecord model to storage multiple draft attributes without add any columns to table.
+Action Draft brings your ActiveRecord model to storage multiple draft attributes without add columns to the business table.
 
 [![Gem Version](https://badge.fury.io/rb/action-draft.svg)](https://rubygems.org/gems/action-draft) [![Build Status](https://travis-ci.org/rails-engine/action-draft.svg?branch=master)](https://travis-ci.org/rails-engine/action-draft)
+
+## Features
+
+- Save drafts without add columns to the business table.
+- Work any ActiveRecord model, just add `has_draft :field_name`;
+
+## TODO
+
+- Add `publish` method for assignment the draft values to actual attributes.
+- Fallback to actual attribute value when draft is nil.
 
 ## Installation
 

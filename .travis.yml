@@ -1,5 +1,7 @@
 language: ruby
 rvm:
   - 2.5
+services:
+  - postgresql
 script:
  - bundle exec rake test
