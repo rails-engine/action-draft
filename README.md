@@ -11,6 +11,10 @@ Action Draft brings your ActiveRecord model to storage multiple draft attributes
 - A `publish` method for assignment the draft values to actual attributes.
 - Fallback to actual attribute value when draft is nil.
 
+## TODO
+
+- Support `publish_draft` attribute for `save`, `update` method to publish draft.
+
 ## Installation
 
 ```ruby
@@ -55,6 +59,54 @@ Then refer to this field in the form for the model:
 <% end %>
 ```
 
+In your controller
+
+```rb
+class MessagesController < ApplicationController
+  def new
+    @message = Message.new
+  end
+
+  def create
+    @message = Message.new(message_params)
+    if message_params[:publish]
+      success = message.publish
+    else
+      success = message.save
+    end
+
+    if success
+      redirect_to messages_path, notice: "Message has created successfully"
+    else
+      render :new
+    end
+  end
+
+  def update
+    @message.assign_attributes(message_params)
+    if message_params[:publish]
+      success = message.publish
+    else
+      success = message.save
+    end
+    if success
+      redirect_to messages_path, notice: "Message has updated successfully"
+    else
+      render :edit
+    end
+  end
+
+  private
+    def set_message
+      @message = Message.find(params[:id])
+    end
+
+    def message_params
+      params.require(:message).perrmit(:draft_title, :draft_content, :publish)
+    end
+end
+```
+
 Save draft attributes:
 
 ```rb
@@ -67,7 +119,7 @@ irb> message.draft_content.to_s
 "Draft message content"
 irb> message.save
 
-ir> message.reload
+irb> message.reload
 irb> message.draft_title.to_s
 "Draft title"
 irb> message.draft_content.to_s
