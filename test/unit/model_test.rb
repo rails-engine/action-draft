@@ -4,8 +4,8 @@ require "test_helper"
 
 class ActionDraft::ModelTest < ActiveSupport::TestCase
   test "action_draft_attributes" do
-    assert_equal [:title, :content], Message.new.action_draft_attributes
     assert_equal [:title, :content], Message.action_draft_attributes
+    assert_equal [:name, :description], Group.action_draft_attributes
   end
 
   test "saving attributes" do

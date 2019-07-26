@@ -5,17 +5,18 @@ module ActionDraft
     extend ActiveSupport::Concern
 
     included do
-      mattr_accessor :action_draft_attributes
     end
 
     def apply_draft
-      self.action_draft_attributes ||= []
-      self.action_draft_attributes.each do |_name|
+      self.class.action_draft_attributes ||= []
+      self.class.action_draft_attributes.each do |_name|
         self.send("#{_name}=", self.send("draft_#{_name}").to_s)
       end
     end
 
     class_methods do
+      attr_accessor :action_draft_attributes
+
       # Provides access to a dependent ActionDraft::Content model that holds the draft attributes.
       # This dependent attribute is lazily instantiated and will be auto-saved when it's been changed. Example:
       #
@@ -55,7 +56,7 @@ module ActionDraft
         end
 
         after_save do
-          self.action_draft_attributes.each do |name|
+          self.class.action_draft_attributes.each do |name|
             public_send("draft_#{name}").save if public_send("draft_#{name}").changed?
           end
         end

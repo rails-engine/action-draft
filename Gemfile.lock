@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    action-draft (0.3.1)
+    action-draft (0.4.0)
       rails (>= 5.2)
 
 GEM
