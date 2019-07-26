@@ -8,16 +8,11 @@ module ActionDraft
       mattr_accessor :action_draft_attributes
     end
 
-    def publish
+    def apply_draft
       self.action_draft_attributes ||= []
       self.action_draft_attributes.each do |_name|
         self.send("#{_name}=", self.send("draft_#{_name}").to_s)
       end
-      self.save
-    end
-
-    def publish!
-      publish ? true : raise_validation_error
     end
 
     class_methods do
