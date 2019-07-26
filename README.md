@@ -66,9 +66,7 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(message_params)
     message.apply_draft if message_params[:publish]
-    success = message.save
-
-    if success
+    if message.save
       redirect_to messages_path, notice: "Message has created successfully"
     else
       render :new
@@ -78,8 +76,7 @@ class MessagesController < ApplicationController
   def update
     @message.assign_attributes(message_params)
     message.apply_draft if message_params[:publish]
-    success = message.save
-    if success
+    if message.save
       redirect_to messages_path, notice: "Message has updated successfully"
     else
       render :edit
