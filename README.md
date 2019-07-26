@@ -11,10 +11,6 @@ Action Draft brings your ActiveRecord model to storage multiple draft attributes
 - A `apply_draft` method for assignment the draft values to actual attributes.
 - Fallback to actual attribute value when draft is nil.
 
-## TODO
-
-- Support `publish_draft` attribute for `save`, `update` method to apply_draft draft.
-
 ## Installation
 
 ```ruby
@@ -69,11 +65,8 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.new(message_params)
-    if message_params[:apply_draft]
-      success = message.apply_draft
-    else
-      success = message.save
-    end
+    message.apply_draft if message_params[:publish]
+    success = message.save
 
     if success
       redirect_to messages_path, notice: "Message has created successfully"
@@ -84,11 +77,8 @@ class MessagesController < ApplicationController
 
   def update
     @message.assign_attributes(message_params)
-    if message_params[:apply_draft]
-      success = message.apply_draft
-    else
-      success = message.save
-    end
+    message.apply_draft if message_params[:publish]
+    success = message.save
     if success
       redirect_to messages_path, notice: "Message has updated successfully"
     else
@@ -102,7 +92,7 @@ class MessagesController < ApplicationController
     end
 
     def message_params
-      params.require(:message).perrmit(:draft_title, :draft_content, :apply_draft)
+      params.require(:message).perrmit(:draft_title, :draft_content, :publish)
     end
 end
 ```
@@ -126,19 +116,18 @@ irb> message.draft_content.to_s
 "Draft message content"
 ```
 
-apply_draft draft content:
+Apply draft content:
 
 ```rb
 irb> message = Message.new
 irb> message.draft_title = "Message title"
 irb> message.apply_draft
 
-irb> message.new_record?
-false
 irb> message.title
 "Message title"
 irb> message.draft_title
 "Message title"
+irb> message.save
 ```
 
 ## License

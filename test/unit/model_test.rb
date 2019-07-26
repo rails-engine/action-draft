@@ -28,7 +28,7 @@ class ActionDraft::ModelTest < ActiveSupport::TestCase
     assert_equal message.draft_content, ActionDraft::Content.where(record: message, name: "content").take
   end
 
-  test "apply_draft to save" do
+  test "apply_draft" do
     message = Message.new(draft_title: "Hello draft title", draft_content: "This is draft message content.")
     message.apply_draft
 
