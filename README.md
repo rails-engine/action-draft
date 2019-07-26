@@ -20,7 +20,7 @@ gem "action-draft"
 And then execute:
 ```bash
 $ bundle
-$ rails action_draft:install
+$ rails action_draft:install:migrations
 ```
 
 ## Usage
