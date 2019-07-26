@@ -28,9 +28,9 @@ class ActionDraft::ModelTest < ActiveSupport::TestCase
     assert_equal message.draft_content, ActionDraft::Content.where(record: message, name: "content").take
   end
 
-  test "publish to save" do
+  test "apply_draft to save" do
     message = Message.new(draft_title: "Hello draft title", draft_content: "This is draft message content.")
-    assert_equal true, message.publish
+    assert_equal true, message.apply_draft
     assert_equal false, message.new_record?
 
     assert_equal "Hello draft title", message.draft_title.to_s
@@ -39,13 +39,13 @@ class ActionDraft::ModelTest < ActiveSupport::TestCase
     assert_equal message.draft_content.to_s, message.content
   end
 
-  test "publish!" do
+  test "apply_draft!" do
     message = Message.new
     assert_equal false, message.valid?
     assert_equal ["Title can't be blank"], message.errors.full_messages_for(:title)
 
     message = Message.new
-    assert_raise(ActiveRecord::RecordInvalid) { message.publish! }
+    assert_raise(ActiveRecord::RecordInvalid) { message.apply_draft! }
   end
 
   test "fallback actual attribute value" do

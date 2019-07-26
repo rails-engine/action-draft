@@ -8,12 +8,12 @@ Action Draft brings your ActiveRecord model to storage multiple draft attributes
 
 - Save drafts without add columns to the business table.
 - Work any ActiveRecord model, just add `has_draft :field_name`.
-- A `publish` method for assignment the draft values to actual attributes.
+- A `apply_draft` method for assignment the draft values to actual attributes.
 - Fallback to actual attribute value when draft is nil.
 
 ## TODO
 
-- Support `publish_draft` attribute for `save`, `update` method to publish draft.
+- Support `publish_draft` attribute for `save`, `update` method to apply_draft draft.
 
 ## Installation
 
@@ -69,8 +69,8 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.new(message_params)
-    if message_params[:publish]
-      success = message.publish
+    if message_params[:apply_draft]
+      success = message.apply_draft
     else
       success = message.save
     end
@@ -84,8 +84,8 @@ class MessagesController < ApplicationController
 
   def update
     @message.assign_attributes(message_params)
-    if message_params[:publish]
-      success = message.publish
+    if message_params[:apply_draft]
+      success = message.apply_draft
     else
       success = message.save
     end
@@ -102,7 +102,7 @@ class MessagesController < ApplicationController
     end
 
     def message_params
-      params.require(:message).perrmit(:draft_title, :draft_content, :publish)
+      params.require(:message).perrmit(:draft_title, :draft_content, :apply_draft)
     end
 end
 ```
@@ -126,12 +126,12 @@ irb> message.draft_content.to_s
 "Draft message content"
 ```
 
-Publish draft content:
+apply_draft draft content:
 
 ```rb
 irb> message = Message.new
 irb> message.draft_title = "Message title"
-irb> message.publish
+irb> message.apply_draft
 
 irb> message.new_record?
 false
