@@ -30,22 +30,12 @@ class ActionDraft::ModelTest < ActiveSupport::TestCase
 
   test "apply_draft to save" do
     message = Message.new(draft_title: "Hello draft title", draft_content: "This is draft message content.")
-    assert_equal true, message.apply_draft
-    assert_equal false, message.new_record?
+    message.apply_draft
 
     assert_equal "Hello draft title", message.draft_title.to_s
     assert_equal "This is draft message content.", message.draft_content.to_s
     assert_equal message.draft_title.to_s, message.title
     assert_equal message.draft_content.to_s, message.content
-  end
-
-  test "apply_draft!" do
-    message = Message.new
-    assert_equal false, message.valid?
-    assert_equal ["Title can't be blank"], message.errors.full_messages_for(:title)
-
-    message = Message.new
-    assert_raise(ActiveRecord::RecordInvalid) { message.apply_draft! }
   end
 
   test "fallback actual attribute value" do

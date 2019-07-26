@@ -13,11 +13,6 @@ module ActionDraft
       self.action_draft_attributes.each do |_name|
         self.send("#{_name}=", self.send("draft_#{_name}").to_s)
       end
-      self.save
-    end
-
-    def apply_draft!
-      apply_draft ? true : raise_validation_error
     end
 
     class_methods do
