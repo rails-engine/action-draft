@@ -2,6 +2,8 @@
 
 Action Draft brings your ActiveRecord model to storage multiple draft attributes without add columns to the business table.
 
+让你的 ActiveRecord Model 能轻易的支持草稿存储功能，而无需在业务表里面增加字段。
+
 [![Gem Version](https://badge.fury.io/rb/action-draft.svg)](https://rubygems.org/gems/action-draft) [![Build Status](https://travis-ci.org/rails-engine/action-draft.svg?branch=master)](https://travis-ci.org/rails-engine/action-draft)
 
 ## Features
