@@ -41,7 +41,7 @@ module ActiveRecordTestCaseHelper
     patterns_to_match.each do |pattern|
       failed_patterns << pattern unless SQLCounter.log_all.any? { |sql| pattern === sql }
     end
-    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(', ')} not found.#{SQLCounter.log.empty? ? '' : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
+    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(", ")} not found.#{SQLCounter.log.empty? ? "" : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
   end
 
   def assert_queries(num = 1, options = {})
@@ -52,7 +52,7 @@ module ActiveRecordTestCaseHelper
     if num == :any
       assert_operator the_log.size, :>=, 1, "1 or more queries expected, but none were executed."
     else
-      mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.empty? ? '' : "\nQueries:\n#{the_log.join("\n")}"}"
+      mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.empty? ? "" : "\nQueries:\n#{the_log.join("\n")}"}"
       assert_equal num, the_log.size, mesg
     end
     x
@@ -92,10 +92,10 @@ module ActiveRecordTestCaseHelper
     # FIXME: this needs to be refactored so specific database can add their own
     # ignored SQL, or better yet, use a different notification for the queries
     # instead examining the SQL content.
-    oracle_ignored     = [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im, /^\s*select .* from all_constraints/im, /^\s*select .* from all_tab_cols/im]
-    mysql_ignored      = [/^SHOW TABLES/i, /^SHOW FULL FIELDS/, /^SHOW CREATE TABLE /i, /^SHOW VARIABLES /]
+    oracle_ignored = [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im, /^\s*select .* from all_constraints/im, /^\s*select .* from all_tab_cols/im]
+    mysql_ignored = [/^SHOW TABLES/i, /^SHOW FULL FIELDS/, /^SHOW CREATE TABLE /i, /^SHOW VARIABLES /]
     postgresql_ignored = [/^\s*select\b.*\bfrom\b.*pg_namespace\b/im, /^\s*select tablename\b.*from pg_tables\b/im, /^\s*select\b.*\battname\b.*\bfrom\b.*\bpg_attribute\b/im, /^SHOW search_path/i]
-    sqlite3_ignored =    [/^\s*SELECT name\b.*\bFROM sqlite_master/im]
+    sqlite3_ignored = [/^\s*SELECT name\b.*\bFROM sqlite_master/im]
 
     [oracle_ignored, mysql_ignored, postgresql_ignored, sqlite3_ignored].each do |db_ignored_sql|
       ignored_sql.concat db_ignored_sql
