@@ -4,18 +4,35 @@ on: [push]
 
 jobs:
   build:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
-    container:
-      image: huacnlee/rails-docker-build:latest
-    services:
-      postgresql:
-        image: postgres
-        ports:
-          - 5432:5432
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ruby: 3.1.0
+            gemfile: Gemfile
+            postgres: 10
+          - ruby: 3.0.0
+            gemfile: gemfiles/Gemfile-6-1
+            postgres: 10
+          - ruby: 2.6
+            gemfile: gemfiles/Gemfile-6-0
+            postgres: 10
+          - ruby: 2.6
+            gemfile: gemfiles/Gemfile-5-2
+            postgres: 10
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+      USE_OFFICIAL_GEM_SOURCE: 1
     steps:
-      - uses: actions/checkout@v3
-      - name: Build & Test
-        run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rails db:create db:migrate
-          bundle exec rake
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: ${{ matrix.postgres }}
+      - run: createdb action-draft-test
+      - run: bundle exec rails test
