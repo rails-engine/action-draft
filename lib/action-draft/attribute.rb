@@ -9,8 +9,8 @@ module ActionDraft
 
     def apply_draft
       self.class.action_draft_attributes ||= []
-      self.class.action_draft_attributes.each do |_name|
-        self.send("#{_name}=", self.send("draft_#{_name}").to_s)
+      self.class.action_draft_attributes.each do |attr_name|
+        send("#{attr_name}=", send("draft_#{attr_name}").to_s)
       end
     end
 

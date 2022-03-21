@@ -1,9 +1,0 @@
-language: ruby
-rvm:
-  - 2.5
-services:
-  - postgresql
-before_script:
-  - bundle exec rails db:create db:migrate
-script:
-  - bundle exec rails test

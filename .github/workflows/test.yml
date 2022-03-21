@@ -1,0 +1,21 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: huacnlee/rails-docker-build:latest
+    services:
+      postgresql:
+        image: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build & Test
+        run: |
+          bundle install --jobs 4 --retry 3
+          bundle exec rails db:create db:migrate
+          bundle exec rake
